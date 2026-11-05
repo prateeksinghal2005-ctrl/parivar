@@ -108,8 +108,8 @@
               spouse: { name: "Deepak", dob: "18.07.1994", photo: "photos/deepak.jpg" },
               children: []
             },
-            { name: "Anurag", dob: "10.01.2004", photo: "photos/anurag.jpg", spouse: null, children: [] },
-            { name: "Prateek", dob: "15.06.2005", photo: "photos/prateek.jpg", spouse: null, children: [] }
+            { name: "Anurag", dob: "10.01.2004", photo: "anurag.jpg", spouse: null, children: [] },
+            { name: "Prateek", dob: "15.06.2005", photo: "prateek.jpg", spouse: null, children: [] }
           ]
         },
         // ---------- Son 4 ----------
@@ -136,9 +136,7 @@
     var path = [family];
 
 // photo ka path GitHub ke hisaab se theek karta hai
-function fixPath(path) {
-  return path.replace("photos/", "").replace(/\.jpg$/i, ".JPG");
-}
+
 
 function avatar(p, cls) {
   if (p.photo) {
