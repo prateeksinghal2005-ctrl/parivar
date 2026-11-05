@@ -141,7 +141,7 @@
 function avatar(p, cls) {
   if (p.photo) {
     var i = document.createElement("img");
-    i.src = fixPath(p.photo); i.alt = p.name; i.className = cls + " zoom";
+    i.src = p.photo; i.alt = p.name; i.className = cls + " zoom";
     i.onclick = function (e) { e.stopPropagation(); openPhoto(p); };
     return i;
   }
@@ -151,7 +151,7 @@ function avatar(p, cls) {
 }
 
 function openPhoto(p) {
-  document.getElementById("bigphoto").src = fixPath(p.photo);
+  document.getElementById("bigphoto").src = p.photo;
   document.getElementById("cap").textContent = p.name + (p.dob ? "  |  " + p.dob : "");
   document.getElementById("overlay").style.display = "flex";
 }
