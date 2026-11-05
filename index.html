@@ -100,7 +100,7 @@
         { name: "Mahendra", dob: "xx-xx-xxxx", photo: "photos/mahendra.jpg",
           spouse: { name: "Kanta", dob: "xx-xx-xxxx", photo: "photos/kanta.jpg" },
           children: [
-            { name: "Garima", dob: "04.04.1993", photo: "photos/garima.JPG",
+            { name: "Garima", dob: "04.04.1993", photo: "photos/garima.jpg",
               spouse: { name: "Dheeraj", dob: "01.08.1993", photo: "photos/dheeraj.jpg" },
               children: []
             },
@@ -135,10 +135,15 @@
     // ============================================================
     var path = [family];
 
+// photo ka path GitHub ke hisaab se theek karta hai
+function fixPath(path) {
+  return path.replace("photos/", "").replace(/\.jpg$/i, ".JPG");
+}
+
 function avatar(p, cls) {
   if (p.photo) {
     var i = document.createElement("img");
-    i.src = p.photo; i.alt = p.name; i.className = cls + " zoom";
+    i.src = fixPath(p.photo); i.alt = p.name; i.className = cls + " zoom";
     i.onclick = function (e) { e.stopPropagation(); openPhoto(p); };
     return i;
   }
@@ -148,7 +153,7 @@ function avatar(p, cls) {
 }
 
 function openPhoto(p) {
-  document.getElementById("bigphoto").src = p.photo;
+  document.getElementById("bigphoto").src = fixPath(p.photo);
   document.getElementById("cap").textContent = p.name + (p.dob ? "  |  " + p.dob : "");
   document.getElementById("overlay").style.display = "flex";
 }
