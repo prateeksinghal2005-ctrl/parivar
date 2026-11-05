@@ -4,6 +4,45 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Hamara Parivar</title>
+  /* ---------- hover aur click ke effects ---------- */
+.node {
+  border-bottom-color: var(--c, #1f5a3c);
+  transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+}
+.node:hover {
+  transform: translateY(-8px) scale(1.07);
+  background: linear-gradient(135deg, #fffaf0, #eaf8ef);
+  box-shadow: 0 16px 26px -6px var(--c, #1f5a3c), 0 0 0 3px var(--c, #1f5a3c);
+}
+.node:active { transform: scale(.93); }
+.node.pop { animation: pop .4s ease; }
+
+.photo { transition: transform .3s ease; border-color: var(--c, #1f5a3c); }
+.node:hover .photo { transform: scale(1.12) rotate(-4deg); }
+
+.tree li > ul { animation: grow .4s ease; transform-origin: top center; }
+
+.spark { position: fixed; pointer-events: none; z-index: 20; font-size: 18px;
+         animation: fly .7s ease-out forwards; }
+
+@keyframes pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(.88); }
+  70%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+@keyframes grow {
+  from { opacity: 0; transform: translateY(-16px) scale(.9); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes fly {
+  from { opacity: 1; transform: translate(0, 0) scale(1); }
+  to   { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .node, .photo, .tree li > ul, .node.pop, .spark { animation: none; transition: none; }
+}
   <style>
     body { font-family: Georgia, serif; background: #eef2ec; color: #1c2b22; margin: 0; padding: 20px; }
     h1 { text-align: center; margin: 0 0 4px; }
@@ -177,34 +216,59 @@ var family = {
       return d;
     }
 
-    function build(p) {
-      var li = document.createElement("li");
-      var node = document.createElement("div");
-      node.className = "node";
-      node.appendChild(personBox(p));
-      if (p.spouse) node.appendChild(personBox(p.spouse));
-      li.appendChild(node);
+   var COLORS = ["#e8a317", "#1f9d5c", "#2d7be5", "#d6428a", "#8a4fd6"];
 
-      if (p.children && p.children.length) {
-        var c = document.createElement("span");
-        c.className = "count";
-        c.textContent = "Bachche: " + p.children.length;
-        li.appendChild(c);
+function sparkle(x, y) {
+  var icons = ["✨", "🌟", "💚", "🎉"];
+  for (var i = 0; i < 8; i++) {
+    var s = document.createElement("span");
+    s.textContent = icons[i % 4];
+    s.className = "spark";
+    s.style.left = x + "px";
+    s.style.top = y + "px";
+    var a = (Math.PI * 2 * i) / 8;
+    s.style.setProperty("--dx", Math.cos(a) * 60 + "px");
+    s.style.setProperty("--dy", Math.sin(a) * 60 + "px");
+    document.body.appendChild(s);
+    setTimeout((function (el) { return function () { el.remove(); }; })(s), 700);
+  }
+}
 
-        var ul = document.createElement("ul");
-        p.children.forEach(function (ch) { ul.appendChild(build(ch)); });
-        li.appendChild(ul);
+function build(p, level) {
+  var li = document.createElement("li");
+  var node = document.createElement("div");
+  node.className = "node";
+  node.style.setProperty("--c", COLORS[level % COLORS.length]);
+  node.appendChild(personBox(p));
+  if (p.spouse) node.appendChild(personBox(p.spouse));
+  li.appendChild(node);
 
-        node.onclick = function () { li.classList.toggle("closed"); };
-      } else {
-        node.style.cursor = "default";
-      }
-      return li;
-    }
+  var hasKids = p.children && p.children.length;
 
-    var root = document.createElement("ul");
-    root.appendChild(build(family));
-    document.getElementById("tree").appendChild(root);
+  if (hasKids) {
+    var c = document.createElement("span");
+    c.className = "count";
+    c.textContent = "Bachche: " + p.children.length;
+    li.appendChild(c);
+
+    var ul = document.createElement("ul");
+    p.children.forEach(function (ch) { ul.appendChild(build(ch, level + 1)); });
+    li.appendChild(ul);
+  }
+
+  node.onclick = function (e) {
+    node.classList.remove("pop");
+    void node.offsetWidth;
+    node.classList.add("pop");
+    sparkle(e.clientX, e.clientY);
+    if (hasKids) li.classList.toggle("closed");
+  };
+  return li;
+}
+
+var root = document.createElement("ul");
+root.appendChild(build(family, 0));
+document.getElementById("tree").appendChild(root);
   </script>
 </body>
 </html>
