@@ -55,81 +55,154 @@
     //  - Jiske bacche nahi: children: []
     //  - Photo/dob nahi pata: "" (khali) rakh do
     // ============================================================
+    <!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hamara Parivar</title>
+  <style>
+    body { font-family: Georgia, serif; background: #eef2ec; color: #1c2b22; margin: 0; padding: 20px; }
+    h1 { text-align: center; margin: 0 0 4px; }
+    .hint { text-align: center; color: #5d6b62; font-size: 14px; margin: 0 0 20px; }
+    .wrap { overflow-x: auto; padding-bottom: 20px; }
+
+    /* ---------- tree ki lines ---------- */
+    .tree { width: max-content; margin: 0 auto; }
+    .tree ul { display: flex; justify-content: center; padding: 20px 0 0; margin: 0; position: relative; }
+    .tree li { list-style: none; text-align: center; position: relative; padding: 20px 8px 0; }
+    .tree li::before, .tree li::after {
+      content: ""; position: absolute; top: 0; right: 50%;
+      border-top: 2px solid #1f5a3c; width: 50%; height: 20px; }
+    .tree li::after { right: auto; left: 50%; border-left: 2px solid #1f5a3c; }
+    .tree li:only-child::before, .tree li:only-child::after { display: none; }
+    .tree li:only-child { padding-top: 0; }
+    .tree li:first-child::before, .tree li:last-child::after { border: 0 none; }
+    .tree li:last-child::before { border-right: 2px solid #1f5a3c; border-radius: 0 6px 0 0; }
+    .tree li:first-child::after { border-radius: 6px 0 0 0; }
+    .tree ul ul::before {
+      content: ""; position: absolute; top: 0; left: 50%;
+      border-left: 2px solid #1f5a3c; height: 20px; }
+    .tree > ul { padding-top: 0; }
+    .tree > ul > li { padding-top: 0; }
+    .tree li.closed > ul { display: none; }
+
+    /* ---------- person ka dabba ---------- */
+    .node { display: inline-flex; gap: 10px; align-items: flex-start; background: #fff;
+            border: 1px solid #cdd8cf; border-bottom: 4px solid #1f5a3c; border-radius: 8px;
+            padding: 10px; cursor: pointer; }
+    .node:hover { background: #f4faf5; }
+    .person { width: 96px; }
+    .person b { display: block; font-size: 15px; margin-top: 5px; }
+    .person small { display: block; color: #5d6b62; font-size: 12px; }
+    .photo { width: 64px; height: 64px; border-radius: 50%; object-fit: cover;
+             display: block; margin: 0 auto; border: 2px solid #1f5a3c; background: #cdd8cf; }
+    .zoom { cursor: zoom-in; }
+    .count { display: block; font-size: 11px; color: #1f5a3c; margin-top: 3px; }
+
+    /* ---------- photo bada karne wala ---------- */
+    #overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.85);
+               z-index: 10; flex-direction: column; align-items: center;
+               justify-content: center; padding: 20px; cursor: zoom-out; }
+    #overlay img { max-width: 100%; max-height: 80vh; border-radius: 8px; }
+    #overlay p { color: #fff; font-size: 20px; margin: 12px 0 0; text-align: center; }
+  </style>
+</head>
+<body>
+  <h1>Hamara Parivar</h1>
+  <p class="hint">Kisi ke dabbe par dabao to unke bachche chhup ya khul jaayenge. Photo par dabao to bada khulega.</p>
+  <div class="wrap"><div class="tree" id="tree"></div></div>
+  <div id="overlay"><img id="bigphoto" alt=""><p id="cap"></p></div>
+
+  <script>
+    // ============================================================
+    //  APNA PARIVAR YAHAN LIKHO (purana wala data yahan paste karo)
+    //  Jiski shaadi nahi hui: spouse: null
+    //  Jiske bacche nahi: children: []
+    // ============================================================
     var family = {
-      name: "Kalyan Prasad", dob: "xx-xx-xxxx", photo: " dada.jpg",
-      spouse: { name: "Uganti Devi", dob: "xx-xx-xxxx", photo: " dadi.jpg" },
+      name: "Dada ji", dob: "01-01-1940", photo: "dada.jpg",
+      spouse: { name: "Dadi ji", dob: "05-05-1945", photo: "dadi.jpg" },
       children: [
-
-        // ---------- Son 1 ----------
-        { name: "Dinesh", dob: "xx-xx-xxxx", photo: " dinesh.jpg",
-          spouse: { name: "Aasha", dob: "xx-xx-xxxx", photo: " Aasha.jpg" },
+        { name: "Ramesh", dob: "15-08-1965", photo: "ramesh.jpg",
+          spouse: { name: "Sunita", dob: "10-03-1968", photo: "sunita.jpg" },
           children: [
-            { name: "Mona", dob: "xx-xx-xxxx", photo: " Mona.jpg",
-              spouse: { name: "Yogi", dob: "xx-xx-xxxx", photo: " Yogi.jpg" },
-              children: [
-                { name: "Aadhya", dob: "xx-xx-xxxx", photo: " Aadhya.jpg", spouse: null, children: [] },
-              ]
-            },          
-            { name: "Leesha", dob: "xx-xx-xxxx", photo: " Leesha.jpg",
-              spouse: { name: "Manish", dob: "xx-xx-xxxx", photo: " Manish.jpg" },
-              children: [
-                { name: "Atharv", dob: "xx-xx-xxxx", photo: " Atharv.jpg", spouse: null, children: [] },
-                { name: "Pihu", dob: "xx-xx-xxxx", photo: " Pihu.jpg", spouse: null, children: [] }
-              ]
-            }
+            { name: "Amit", dob: "12-04-1990", photo: "amit.jpg", spouse: null, children: [] },
+            { name: "Neha", dob: "03-07-1994", photo: "neha.jpg", spouse: null, children: [] }
           ]
         },
-
-        // ---------- Son 2 ----------
-        { name: "Umesh", dob: "xx-xx-xxxx", photo: " umesh.jpg",
-          spouse: { name: "Nirmala", dob: "xx-xx-xxxx", photo: " nirmala.jpg" },
-          children: [
-            { name: "Rohit", dob: "xx-xx-xxxx", photo: " rohit.jpg",
-              spouse: { name: "Pooja", dob: "xx-xx-xxxx", photo: " pooja.jpg" },
-              children: []
-            },
-            { name: "Shubhangi", dob: "xx-xx-xxxx", photo: " shubhangi.jpg",
-              spouse: { name: "Anil", dob: "xx-xx-xxxx", photo: " anil.jpg" },
-              children: []
-            },
-            { name: "Anshi", dob: "xx-xx-xxxx", photo: " anshi.jpg", spouse: null, children: [] }
-          ]
-        },
-        // ---------- Son 3 ----------
-
-        { name: "Mahendra", dob: "31.07.1965", photo: " mahendra.jpg",
-          spouse: { name: "Kanta", dob: "15.07.1966", photo: " kanta.jpg" },
-          children: [
-            { name: "Garima", dob: "04.04.1993", photo: "garima.jpg",
-              spouse: { name: "Dheeraj", dob: "01.08.1993", photo: "dheeraj.jpg" },
-              children: []
-            },
-            { name: "Anjali", dob: "18.07.1994", photo: "anjali.jpg",
-              spouse: { name: "Deepak", dob: "18.10.1991", photo: "deepak.jpg" },
-              children: []
-            },
-            { name: "Anurag", dob: "10.01.2004", photo: "anurag.jpg", spouse: null, children: [] },
-            { name: "Prateek", dob: "15.06.2005", photo: "prateek.jpg", spouse: null, children: [] }
-          ]
-        },
-        // ---------- Son 4 ----------
-        { name: "Kailash", dob: "xx-xx-xxxx", photo: " kailash.jpg",
-          spouse: { name: "Kusum", dob: "xx-xx-xxxx", photo: " kusum.jpg" },
-          children: [
-            { name: "Sparsh", dob: "xx-xx-xxxx", photo: " sparsh.jpg", spouse: null, children: [] },
-            { name: "Vanshika", dob: "xx-xx-xxxx", photo: " vanshika.jpg", spouse: null, children: [] }
-          ]
-        },
-        // ---------- Son 5 ----------
-        { name: "Keshav", dob: "xx-xx-xxxx", photo: " Keshav.jpg",
-          spouse: { name: "Babita", dob: "xx-xx-xxxx", photo: " Babita.jpg" },
-          children: [
-            { name: "Abhishek", dob: "xx-xx-xxxx", photo: " abhishek.jpg", spouse: null, children: [] },
-            { name: "Kinjal", dob: "xx-xx-xxxx", photo: " kinjal.jpg", spouse: null, children: [] },
-              ]
-            }
+        { name: "Suresh", dob: "20-02-1967", photo: "suresh.jpg", spouse: null, children: [] }
       ]
     };
+
+    // ============================================================
+    //  Yahan se neeche kuch badalne ki zaroorat nahi
+    // ============================================================
+    function openPhoto(p) {
+      document.getElementById("bigphoto").src = p.photo;
+      document.getElementById("cap").textContent = p.name + (p.dob ? "  |  " + p.dob : "");
+      document.getElementById("overlay").style.display = "flex";
+    }
+    document.getElementById("overlay").onclick = function () { this.style.display = "none"; };
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") document.getElementById("overlay").style.display = "none";
+    });
+
+    function personBox(p) {
+      var d = document.createElement("div");
+      d.className = "person";
+
+      var img;
+      if (p.photo) {
+        img = document.createElement("img");
+        img.src = p.photo; img.alt = p.name; img.className = "photo zoom";
+        img.onclick = function (e) { e.stopPropagation(); openPhoto(p); };
+      } else {
+        img = document.createElement("div");
+        img.className = "photo";
+      }
+      d.appendChild(img);
+
+      var b = document.createElement("b"); b.textContent = p.name;
+      d.appendChild(b);
+      if (p.dob) {
+        var s = document.createElement("small"); s.textContent = p.dob;
+        d.appendChild(s);
+      }
+      return d;
+    }
+
+    function build(p) {
+      var li = document.createElement("li");
+      var node = document.createElement("div");
+      node.className = "node";
+      node.appendChild(personBox(p));
+      if (p.spouse) node.appendChild(personBox(p.spouse));
+      li.appendChild(node);
+
+      if (p.children && p.children.length) {
+        var c = document.createElement("span");
+        c.className = "count";
+        c.textContent = "Bachche: " + p.children.length;
+        li.appendChild(c);
+
+        var ul = document.createElement("ul");
+        p.children.forEach(function (ch) { ul.appendChild(build(ch)); });
+        li.appendChild(ul);
+
+        node.onclick = function () { li.classList.toggle("closed"); };
+      } else {
+        node.style.cursor = "default";
+      }
+      return li;
+    }
+
+    var root = document.createElement("ul");
+    root.appendChild(build(family));
+    document.getElementById("tree").appendChild(root);
+  </script>
+</body>
+</html>
     // ============================================================
     //  Yahan se neeche kuch badalne ki zaroorat nahi
     // ============================================================
