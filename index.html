@@ -225,7 +225,6 @@
     .node:hover .person b { color: var(--c, var(--gold)); letter-spacing: .06em; }
     .stars { inset: -30px; transition: transform .4s ease-out; }
     h1 { cursor: pointer; }
-    .hint::after { content: "|"; margin-left: 2px; animation: blink .8s steps(1) infinite; }
     .confetti {
       position: fixed; top: -14px; z-index: 15; pointer-events: none;
       width: 8px; height: 12px; border-radius: 2px;
@@ -273,7 +272,6 @@
     /* ---------- keyframes ---------- */
     @keyframes spin { to { transform: rotate(360deg); } }
     @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
-    @keyframes blink { 50% { opacity: 0; } }
     @keyframes fall {
       to { transform: translate(var(--cx), 105vh) rotate(var(--cr)); opacity: .7; }
     }
@@ -438,23 +436,6 @@ var family = {
             }
       ]
     };
-            // ---------- Son 6 ----------
-        { name: "Meena", dob: "xx-xx-xxxx", photo: "dinesh.jpg",
-          spouse: { name: "Madan Mohan", dob: "xx-xx-xxxx", photo: "Aasha.jpg" },
-          children: [
-            { name: "Golu", dob: "xx-xx-xxxx", photo: "Golu.jpg",
-              spouse: { name: "Shalini", dob: "xx-xx-xxxx", photo: "Shalini.jpg" },
-              children: []
-            },          
-            { name: "Manu", dob: "xx-xx-xxxx", photo: "Manu.jpg",
-              spouse: { name: "Aaditya", dob: "xx-xx-xxxx", photo: "Aaditya.jpg" },
-              children: [
-                 { name: "xyz", dob: "xx-xx-xxxx", photo: "xyz.jpg", spouse: null, children: [] },
-                 { name: "xyz", dob: "xx-xx-xxxx", photo: "xyz.jpg", spouse: null, children: [] }
-              ]
-            }
-          ]
-        },
 
     // ============================================================
     //  Yahan se neeche kuch badalne ki zaroorat nahi
